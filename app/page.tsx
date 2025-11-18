@@ -32,96 +32,21 @@ export default function Home() {
   const [activeCompany, setActiveCompany] = useState<Product | null>(null);
   const [showContactForm, setShowContactForm] = useState<boolean>(false);
 
-  // Демо-товары для поиска
-  const demoProducts: Product[] = [
-    {
-      id: 1,
-      name: "Промышленный компрессор",
-      price: "450 000 руб.",
-      category: "equipment",
-      categoryName: "Оборудование",
-      description: "Мощный компрессор для производственных нужд. Производительность 1000 л/мин, давление 8 бар.",
-      company: "ООО ПромСнаб",
-      companyEmail: "contact@promsnab.ru",
-      companyPhone: "+7 (495) 111-22-33",
-      inStock: true,
-      rating: 4.8,
-      reviews: 24
-    },
-    {
-      id: 2,
-      name: "Станок ЧПУ",
-      price: "1 200 000 руб.",
-      category: "metalworking",
-      categoryName: "Металлообработка",
-      description: "Современный станок с ЧПУ для точной обработки металлов. Рабочая зона 1500x800 мм.",
-      company: "Завод Станкостроитель",
-      companyEmail: "info@zavod-stank.ru",
-      companyPhone: "+7 (495) 222-33-44",
-      inStock: true,
-      rating: 4.9,
-      reviews: 18
-    },
-    {
-      id: 3,
-      name: "Промышленные подшипники",
-      price: "85 000 руб.",
-      category: "components",
-      categoryName: "Комплектующие",
-      description: "Качественные подшипники для промышленного оборудования. Серия 6000-6200.",
-      company: "МеталлКомплект",
-      companyEmail: "sales@metallkomplekt.ru",
-      companyPhone: "+7 (495) 333-44-55",
-      inStock: true,
-      rating: 4.7,
-      reviews: 32
-    },
-    {
-      id: 4,
-      name: "Гидравлический пресс",
-      price: "320 000 руб.",
-      category: "equipment",
-      categoryName: "Оборудование",
-      description: "Надежный гидравлический пресс для металлообработки. Усилие 50 тонн.",
-      company: "ООО ПромСнаб",
-      companyEmail: "contact@promsnab.ru",
-      companyPhone: "+7 (495) 111-22-33",
-      inStock: false,
-      rating: 4.6,
-      reviews: 15
-    },
-    {
-      id: 5,
-      name: "Конвейерная лента",
-      price: "150 000 руб.",
-      category: "transport",
-      categoryName: "Транспортировка",
-      description: "Прочная конвейерная лента для производственных линий. Ширина 800 мм.",
-      company: "ТрансКонвейер",
-      companyEmail: "info@transconveyor.ru",
-      companyPhone: "+7 (495) 444-55-66",
-      inStock: true,
-      rating: 4.5,
-      reviews: 9
-    },
-    {
-      id: 6,
-      name: "Промышленные датчики",
-      price: "45 000 руб.",
-      category: "automation",
-      categoryName: "Автоматизация",
-      description: "Точные датчики для систем автоматизации. Температура, давление, уровень.",
-      company: "Автоматика-Про",
-      companyEmail: "sales@avtomatika-pro.ru",
-      companyPhone: "+7 (495) 555-66-77",
-      inStock: true,
-      rating: 4.8,
-      reviews: 21
-    }
+  // Категории для поиска
+  const categories = [
+    { id: 'equipment', name: 'Оборудование', icon: '⚙️', count: '0' },
+    { id: 'metalworking', name: 'Металлообработка', icon: '🔩', count: '0' },
+    { id: 'components', name: 'Комплектующие', icon: '🔧', count: '0' },
+    { id: 'automation', name: 'Автоматизация', icon: '🤖', count: '0' },
+    { id: 'transport', name: 'Транспортировка', icon: '🚚', count: '0' },
+    { id: 'raw', name: 'Сырье и материалы', icon: '⛏️', count: '0' }
   ];
 
-  // Фильтрация товаров
-  const filteredProducts = demoProducts.filter(product => {
+  // Пустой массив товаров - будут добавляться компаниями
+  const products: Product[] = [];
+
+  // Фильтрация товаров (пока всегда пустая)
+  const filteredProducts = products.filter(product => {
     const term = searchTerm.toLowerCase();
     const matchesSearch =
       product.name.toLowerCase().includes(term) ||
@@ -200,16 +125,6 @@ export default function Home() {
     const price = parseInt(priceStr || '0', 10);
     return total + price;
   }, 0);
-
-  // Функция для определения категории по названию
-  const getCategoryFromName = (name: string): string => {
-    if (name.toLowerCase().includes('оборуд')) return 'equipment';
-    if (name.toLowerCase().includes('металл')) return 'metalworking';
-    if (name.toLowerCase().includes('комплект')) return 'components';
-    if (name.toLowerCase().includes('автомат')) return 'automation';
-    if (name.toLowerCase().includes('транспорт')) return 'transport';
-    return 'all';
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -419,7 +334,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold mb-4">Найдите промышленное оборудование</h2>
-            <p className="text-xl opacity-90">Более 100+ товаров от проверенных поставщиков</p>
+            <p className="text-xl opacity-90">Площадка для B2B сотрудничества промышленных предприятий</p>
           </div>
 
           <form onSubmit={handleSearch} className="space-y-4">
@@ -428,7 +343,7 @@ export default function Home() {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Например: компрессор, станок, подшипники..."
+                    placeholder="Начните вводить название товара или компании..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full px-6 py-4 pl-12 text-gray-900 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -448,11 +363,11 @@ export default function Home() {
                   className="w-full px-4 py-4 text-gray-900 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 >
                   <option value="all">Все категории</option>
-                  <option value="equipment">Оборудование</option>
-                  <option value="metalworking">Металлообработка</option>
-                  <option value="components">Комплектующие</option>
-                  <option value="automation">Автоматизация</option>
-                  <option value="transport">Транспортировка</option>
+                  {categories.map(category => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -468,198 +383,73 @@ export default function Home() {
           {searchTerm && (
             <div className="text-center mt-4">
               <p className="text-green-100">
-                Найдено товаров: <span className="font-semibold">{filteredProducts.length}</span>
-                {searchCategory !== 'all' && ` в категории "${demoProducts.find(p => p.category === searchCategory)?.categoryName}"`}
+                Товары появятся после регистрации компаний-поставщиков
               </p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Результаты поиска или основной контент */}
-      {showSearchResults && searchTerm ? (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900">Результаты поиска</h2>
-              <p className="text-gray-600 mt-2">
-                По запросу: <span className="font-semibold">"{searchTerm}"</span>
-                {searchCategory !== 'all' && ` в категории "${demoProducts.find(p => p.category === searchCategory)?.categoryName}"`}
-              </p>
-            </div>
-            <button
-              onClick={clearSearch}
-              className="text-gray-500 hover:text-gray-700 flex items-center"
-              type="button"
-            >
-              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              Очистить поиск
-            </button>
-          </div>
+      {/* Основной контент - только категории */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Категории оборудования</h2>
+          <p className="text-lg text-gray-600">Выберите категорию для просмотра товаров</p>
+        </div>
 
-          {filteredProducts.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-xl shadow-sm">
-              <div className="text-gray-400 text-6xl mb-4">🔍</div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-4">Ничего не найдено</h3>
-              <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                Попробуйте изменить поисковый запрос или выбрать другую категорию
-              </p>
-              <div className="flex justify-center space-x-4">
-                <button
-                  onClick={clearSearch}
-                  className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700"
-                  type="button"
-                >
-                  Показать все товары
-                </button>
-                <button
-                  onClick={() => setSearchCategory('all')}
-                  className="border border-green-600 text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-50"
-                  type="button"
-                >
-                  Все категории
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredProducts.map((product) => (
-                  <div key={product.id} className="bg-white rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
-                    <div className="h-48 bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center relative">
-                      <div className="text-center">
-                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
-                          <span className="text-green-600 text-xl">🏭</span>
-                        </div>
-                        <span className="text-sm text-gray-500">Изображение товара</span>
-                      </div>
-
-                      {/* Кнопка избранного */}
-                      <button
-                        onClick={() => toggleFavorite(product.id)}
-                        className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-sm hover:shadow-md"
-                        type="button"
-                      >
-                        <svg
-                          className={`w-5 h-5 ${favorites.includes(product.id) ? 'text-red-500 fill-current' : 'text-gray-400'}`}
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                      </button>
-
-                      {/* Статус наличия */}
-                      <div className={`absolute top-4 left-4 px-2 py-1 rounded text-xs font-medium ${product.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {product.inStock ? 'В наличии' : 'Под заказ'}
-                      </div>
-                    </div>
-
-                    <div className="p-6">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
-                          {product.categoryName}
-                        </span>
-                        <div className="flex items-center text-sm text-gray-500">
-                          <span className="text-yellow-500">★</span>
-                          <span className="ml-1">{product.rating}</span>
-                          <span className="mx-1">•</span>
-                          <span>{product.reviews} отзывов</span>
-                        </div>
-                      </div>
-
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{product.name}</h3>
-
-                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
-
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-2xl font-bold text-gray-900">{product.price}</span>
-                      </div>
-
-                      <div className="flex justify-between items-center mb-3">
-                        <span className="text-sm text-gray-500">от {product.company}</span>
-                      </div>
-
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => addToCart(product)}
-                          className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors"
-                          type="button"
-                        >
-                          В корзину
-                        </button>
-                        <button
-                          onClick={() => contactCompany(product)}
-                          className="flex-1 border border-green-600 text-green-600 px-4 py-2 rounded-lg font-medium hover:bg-green-50 transition-colors"
-                          type="button"
-                        >
-                          Связаться
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="text-center mt-12">
-                <p className="text-gray-600 mb-4">Хотите добавить свой товар в каталог?</p>
-                <a href="/register" className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 inline-block">
-                  Зарегистрировать компанию
-                </a>
-              </div>
-            </div>
-          )}
-        </section>
-      ) : (
-        /* Основной контент когда поиск не активен */
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Популярные категории</h2>
-            <p className="text-lg text-gray-600">Ищите оборудование по категориям</p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-16">
-            {[
-              { name: "Оборудование", icon: "⚙️", count: "24" },
-              { name: "Металлообработка", icon: "🔩", count: "18" },
-              { name: "Комплектующие", icon: "🔧", count: "32" },
-              { name: "Автоматизация", icon: "🤖", count: "15" },
-              { name: "Транспортировка", icon: "🚚", count: "9" },
-              { name: "Сырье", icon: "⛏️", count: "12" }
-            ].map((category, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => {
-                  setSearchCategory(getCategoryFromName(category.name));
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-16">
+          {categories.map((category) => (
+            <div
+              key={category.id}
+              className="bg-white rounded-xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => {
+                setSearchCategory(category.id);
+                setShowSearchResults(true);
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e: React.KeyboardEvent) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  setSearchCategory(category.id);
                   setShowSearchResults(true);
-                }}
-                role="button"
-                tabIndex={0}
-                onKeyPress={(e: React.KeyboardEvent) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    setSearchCategory(getCategoryFromName(category.name));
-                    setShowSearchResults(true);
-                  }
-                }}
-              >
-                <div className="text-3xl mb-3">{category.icon}</div>
-                <h3 className="font-semibold text-gray-900 mb-1">{category.name}</h3>
-                <p className="text-sm text-gray-500">{category.count} товаров</p>
-              </div>
-            ))}
-          </div>
+                }
+              }}
+            >
+              <div className="text-3xl mb-3">{category.icon}</div>
+              <h3 className="font-semibold text-gray-900 mb-1">{category.name}</h3>
+              <p className="text-sm text-gray-500">Пока нет товаров</p>
+            </div>
+          ))}
+        </div>
 
-          <div className="text-center">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Не нашли что искали?</h3>
-            <p className="text-gray-600 mb-6">Зарегистрируйте компанию и добавьте свои товары в каталог</p>
-            <a href="/register" className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700">
-              Начать продавать
-            </a>
+        {/* Сообщение когда нет товаров в поиске */}
+        {showSearchResults && (
+          <div className="text-center py-16 bg-white rounded-xl shadow-sm">
+            <div className="text-gray-400 text-6xl mb-4">🏭</div>
+            <h3 className="text-2xl font-semibold text-gray-900 mb-4">Товары пока не добавлены</h3>
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              Эта категория будет заполнена после регистрации компаний-поставщиков
+            </p>
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={clearSearch}
+                className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700"
+                type="button"
+              >
+                Вернуться к категориям
+              </button>
+            </div>
           </div>
-        </section>
-      )}
+        )}
+
+        <div className="text-center">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">Хотите добавить свои товары?</h3>
+          <p className="text-gray-600 mb-6">Зарегистрируйте компанию и начните продавать на нашей площадке</p>
+          <a href="/register" className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700">
+            Начать продавать
+          </a>
+        </div>
+      </section>
 
       {/* Футер */}
       <footer className="bg-gray-800 text-white py-12">
