@@ -1,4 +1,1 @@
-{
-  "name": "marketplace",
-  "version": "1.0.0"
-}
+{"name":"marketplace","version":"1.0.0","private":true,"scripts":{"dev":"next dev"},"dependencies":{"next":"^14","react":"^18","react-dom":"^18"},"devDependencies":{"@types/node":"24.10.2","@types/react":"19.2.7","typescript":"5.9.3"}}
